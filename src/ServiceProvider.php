@@ -2,9 +2,9 @@
 
 namespace Metadata;
 
-use Illuminate\Foundation\Support\Providers\EventServiceProvider;
+use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
 
-class ServiceProvider  extends EventServiceProvider
+class ServiceProvider extends LaravelServiceProvider
 {
     /**
      * The event listener mappings for the application.
@@ -20,8 +20,7 @@ class ServiceProvider  extends EventServiceProvider
      */
     public function boot()
     {
-        parent::boot();
-        
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');        
     }
 
     /**
