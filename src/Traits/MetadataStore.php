@@ -14,43 +14,24 @@ trait MetadataStore
     {
         $owner_id = $this->generateId($model);
         
-        $data = MetadataSection::where('name', '=', $sections)
-            ->with(['groups' => function ($query) use ($owner_id) {
-                $query->select(['metadata_groups.metadata_section_id', 'metadata_groups.id'])
-                    ->with(['metadata' => function ($query) use ($owner_id) {
-                        $query->select('metadata.id', 'metadata.name')
-                            ->with(['values' => function ($query) use ($owner_id){
-                                $query->select('value')
-                                    ->where('owner_id', '=', $owner_id);
-                            }]);
-                    }]);
-            }])->get();
+        $data = MetadataSection::select('metadata_metadata_group.metadata_group_id as groups', 
+            'metadata_metadata_group.metadata_id as metadata', 'metadata_values.value as value')            
+            ->leftJoin('metadata_groups', 'metadata_groups.metadata_section_id', '=', 'metadata_sections.id')
+            ->leftJoin('metadata_metadata_group', 'metadata_groups.id', '=', 'metadata_metadata_group.metadata_group_id')
+            ->leftJoin('metadata_values', 'metadata_values.metadata_metadata_group_id', '=', 'metadata_metadata_group.id')
+            ->where('metadata_sections.name', '=', $sections)
+            ->where('metadata_values.owner_id', '=', $owner_id)
+            ->get();
 
         $values = [];
         foreach ($data as $section) {
-            $values = $this->prepareValues($section);
+            $section = $section->toArray();
+            $values[$section['groups']][$section['metadata']] = $section['value'];
         }   
         
         $result = [
             'metadata' => $values
         ];
-
-        return $result;
-    }
-
-    protected function prepareValues($data)
-    {
-        $groups = $data['groups'];
-        $result = [];
-        
-        foreach ($groups as $group) {
-            foreach ($group->metadata as $metadata) {
-                if ($metadata->values->isEmpty()) {
-                    continue;
-                }
-                $result[$group->id][$metadata->id] = $metadata->values->first()->value;
-            }
-        }
 
         return $result;
     }
