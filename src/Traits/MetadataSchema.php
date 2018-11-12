@@ -61,7 +61,7 @@ trait MetadataSchema
         foreach ($fields as $field) {
             $_field = [
                 'object' => [
-                    'realName' => "metadata[{$group}][{$field->id}]",
+                    'realName' => "tabsform.metadata.{$group}.{$field->id}",
                     'key' => "metadata[{$group}][{$field->id}]",
                     'label' => $field->name
                 ],
