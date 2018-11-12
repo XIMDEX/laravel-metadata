@@ -2,7 +2,7 @@
     "name": "ximdex/metadata-laravel",
     "description": "Metadata base models and migrations",
     "type": "library",
-    "license": "AGPL 3.0",
+    "license": "AGPL-3.0",
     "authors": [
         {
             "name": "Alejandro de Tovar",
