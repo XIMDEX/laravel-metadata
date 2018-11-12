@@ -18,27 +18,18 @@ class CreateMetadataGroupMetadataTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('metadata_group_id');
             $table->unsignedInteger('metadata_id');
-            $table->unsignedInteger('metadata_value_id')->nullable();
             $table->boolean('required')->default(false);
             $table->timestamps();
+
+            $table->foreign('metadata_group_id')
+                ->references('id')
+                ->on('metadata_groups')
+                ->onDelete('cascade');
 
             $table->foreign('metadata_id')
                 ->references('id')
                 ->on('metadata')
-                ->onDelete('cascade')
-                ->nullable();
-
-            $table->foreign('metadata_group_id')
-                ->references('id')
-                ->on('metadata_group')
-                ->onDelete('cascade')
-                ->nullable();
-
-            $table->foreign('metadata_value_id')
-                ->references('id')
-                ->on('metadata_value')
-                ->onDelete('set null')
-                ->nullable();
+                ->onDelete('cascade');
         });
     }
 
@@ -49,6 +40,6 @@ class CreateMetadataGroupMetadataTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('metadata_group_metadata');
+        Schema::dropIfExists('metadata_metadata_group');
     }
 }

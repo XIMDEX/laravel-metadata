@@ -17,7 +17,15 @@ class CreateMetadataValueTable extends Migration
         Schema::create('metadata_values', function (Blueprint $table) {
             $table->increments('id');
             $table->text('value');
+            $table->text('owner_id');
+            $table->unsignedInteger('metadata_metadata_group_id');
             $table->timestamps();
+
+
+            $table->foreign('metadata_metadata_group_id')
+                ->references('id')
+                ->on('metadata_metadata_group')
+                ->onDelete('cascade');
         });
     }
 
