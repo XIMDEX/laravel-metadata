@@ -16,8 +16,9 @@ class Metadata extends Model
             'type' => 'belongsToMany',
             'relation' => 'metadata_metadata_group',
             'model' => MetadataValue::class,
-            'foreignPivotKey' => 'metadata_id',
-            'relatedPivotKey' => 'metadata_value_id',
+            'foreignPivotKey' => 'id',
+            'relatedPivotKey' => 'id',
+            'relatedKey' => 'metadata_metadata_group_id'
         ]
     ];
 
