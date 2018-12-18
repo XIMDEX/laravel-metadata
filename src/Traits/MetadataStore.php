@@ -9,13 +9,15 @@ use Metadata\Models\MetadataMetadataGroup;
 
 trait MetadataStore
 {
-
     protected function getMetadataValue(Model $model, string $sections = null)
     {
         $owner_id = $this->generateId($model);
         
-        $data = MetadataSection::select('metadata_metadata_group.metadata_group_id as groups', 
-            'metadata_metadata_group.metadata_id as metadata', 'metadata_values.value as value')            
+        $data = MetadataSection::select(
+            'metadata_metadata_group.metadata_group_id as groups',
+            'metadata_metadata_group.metadata_id as metadata',
+            'metadata_values.value as value'
+        )
             ->leftJoin('metadata_groups', 'metadata_groups.metadata_section_id', '=', 'metadata_sections.id')
             ->leftJoin('metadata_metadata_group', 'metadata_groups.id', '=', 'metadata_metadata_group.metadata_group_id')
             ->leftJoin('metadata_values', 'metadata_values.metadata_metadata_group_id', '=', 'metadata_metadata_group.id')
@@ -27,7 +29,7 @@ trait MetadataStore
         foreach ($data as $section) {
             $section = $section->toArray();
             $values[$section['groups']][$section['metadata']] = $section['value'];
-        }   
+        }
         
         $result = [
             'metadata' => $values
@@ -60,6 +62,29 @@ trait MetadataStore
             }
 
             $result = true;
+        } catch (\Exception $ex) {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    protected function removeMetadata(string $group, string $metadata, Model $model) : bool
+    {
+        $result = true;
+        try {
+            $modelId = $this->generateId($model);
+            $metadataMetadataGroup = MetadataMetadataGroup::where('metadata_group_id', '=', $group)
+                ->where('metadata_id', '=', $metadata)
+                ->firstOrFail();
+
+            $metadata = MetadataValue::where('owner_id', '=', $modelId)
+                ->where('metadata_metadata_group_id', '=', $metadataMetadataGroup->id)
+                ->first();
+            
+            if (!is_null($metadata)) {
+                $result = $metadata->delete();
+            }
         } catch (\Exception $ex) {
             $result = false;
         }
