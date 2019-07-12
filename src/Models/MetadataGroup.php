@@ -2,7 +2,7 @@
 
 namespace Metadata\Models;
 
-use VD\Models\Model;
+use Ximdex\Core\Database\Eloquent\Model;
 
 class MetadataGroup extends Model
 {

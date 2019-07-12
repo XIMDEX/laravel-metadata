@@ -2,7 +2,7 @@
 
 namespace Metadata\Models;
 
-use VD\Models\Model;
+use Ximdex\Core\Database\Eloquent\Model;
 use Metadata\Enums\Metadata as EnumMetadata;
 
 class Metadata extends Model

@@ -2,9 +2,9 @@
 
 namespace Metadata\Enums;
 
-use VD\Core\Enums;
+use Ximdex\Core\Enum;
 
-class Metadata extends Enums
+class Metadata extends Enum
 {
     const TYPE_INT = 'integer';
     const TYPE_FLOAT = 'float';
