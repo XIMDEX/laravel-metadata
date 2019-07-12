@@ -20,7 +20,12 @@ class ServiceProvider extends LaravelServiceProvider
      */
     public function boot()
     {
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');        
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        $this->mergeConfigFrom(__DIR__ . '/../configs/configs.php', 'xmetadata');
+
+        $this->publishes([
+            __DIR__ . '/../configs/configs.php' => config_path('xmetadata.php'),
+        ], 'config');
     }
 
     /**
@@ -29,7 +34,5 @@ class ServiceProvider extends LaravelServiceProvider
      * @return void
      */
     public function register()
-    {
-        
-    }
+    { }
 }

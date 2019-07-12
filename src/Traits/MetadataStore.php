@@ -12,7 +12,7 @@ trait MetadataStore
     protected function getMetadataValue(Model $model, string $sections = null)
     {
         $owner_id = $this->generateId($model);
-        
+
         $data = MetadataSection::select(
             'metadata_metadata_group.metadata_group_id as groups',
             'metadata_metadata_group.metadata_id as metadata',
@@ -30,15 +30,15 @@ trait MetadataStore
             $section = $section->toArray();
             $values[$section['groups']][$section['metadata']] = $section['value'];
         }
-        
+
         $result = [
-            'metadata' => $values
+            $sections => $values
         ];
 
         return $result;
     }
 
-    protected function saveMetadataValue(string $group, string $metadata, $value, Model $model) : bool
+    protected function saveMetadataValue(string $group, string $metadata, $value, Model $model): bool
     {
         try {
             $modelId = $this->generateId($model);
@@ -69,7 +69,7 @@ trait MetadataStore
         return $result;
     }
 
-    protected function removeMetadata(string $group, string $metadata, Model $model) : bool
+    protected function removeMetadata(string $group, string $metadata, Model $model): bool
     {
         $result = true;
         try {
@@ -81,7 +81,7 @@ trait MetadataStore
             $metadata = MetadataValue::where('owner_id', '=', $modelId)
                 ->where('metadata_metadata_group_id', '=', $metadataMetadataGroup->id)
                 ->first();
-            
+
             if (!is_null($metadata)) {
                 $result = $metadata->delete();
             }
@@ -92,12 +92,12 @@ trait MetadataStore
         return $result;
     }
 
-    protected function generateId(Model $model) : string
+    protected function generateId(Model $model): string
     {
         return "{$this->getModelName($model)}_{$model->id}";
     }
 
-    private function getModelName(Model $model) : string
+    private function getModelName(Model $model): string
     {
         $class = class_basename($model);
         return $class;
